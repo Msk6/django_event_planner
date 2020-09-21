@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<br>
+<br>
+    <h1>{{event.title}}</h1>
+    <p>{{event.owner.username}}</p>
+    <p>{{event.description}}</p>
+    <p>{{event.location}}</p>
+    <p>{{event.datetime}}</p>
+    <p>{{event.seats}}</p>
+    <div class="row">
+        {% if event.seats > event.reserved_seats %}
+            <a href="{% url 'event-booking' event.slug %}" class="btn btn-warning btn-block">
+                Book event
+            </a>
+        {% else %}
+            <a href="" class="btn btn-warning btn-block deactivate">
+                Full
+            </a>
+        {% endif %}
+        <a href="{% url 'update-event' event.slug %}" class="btn btn-warning btn-block">
+            update event
+        </a>
+    </div>
+    <br>
+    <br>
+    <h1>Guests</h1>
+    {% for booking in bookings %}
+        <h3>{{booking.user.username}}</h3>
+        <h3>{{booking.seats}}</h3>
+        <hr>
+    {% endfor %}
+    
+{% endblock content %}

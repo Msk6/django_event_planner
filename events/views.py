@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from .forms import UserSignup, UserLogin
+from .forms import UserSignup, UserLogin, EventBookingForm, AddUpdateEventForm
+from .models import Event, Booking
+from datetime import datetime
+from django.contrib import messages
+from django.db.models import Q
 
 def home(request):
     return render(request, 'home.html')
@@ -58,4 +62,123 @@ class Logout(View):
         logout(request)
         messages.success(request, "You have successfully logged out.")
         return redirect("login")
+
+
+# ----- Any user -----
+
+def event_list(request):
+    events = Event.objects.filter(datetime__gte=datetime.today()).order_by('datetime')
+
+    query = request.GET.get('search')
+    if query:
+        events = events.filter(
+            Q(title__icontains=query)|
+            Q(description__icontains=query)|
+            Q(owner__username__icontains=query)
+            ).distinct()
+    context = {
+        'events': events,
+    }
+    return render(request, 'list_test.html', context)
+
+
+def event_detail(request, event_slug):
+    event = Event.objects.get(slug=event_slug)
+    # permission (only organizer)
+    bookings = event.bookings.all().distinct()
+    context = {
+        'event': event,
+        'bookings': bookings,
+    }
+    return render(request, 'detail_test.html', context)
+ 
+# ----- Registered user (not organizer)-----
+
+def event_booking(request, event_slug):
+    form = EventBookingForm()
+    event = Event.objects.get(slug=event_slug)
+    if request.method == "POST":
+        form = EventBookingForm(request.POST)
+        if form.is_valid():
+            # Check seats availability
+            if form.cleaned_data['seats'] + event.reserved_seats > event.seats:
+                messages.warning(request, "No enough seats")
+                return redirect('event-booking', event_slug)
+
+            booking_obj = form.save(commit=False)
+            booking_obj.user = request.user
+            booking_obj.event = event
+            booking_obj.save()
+            return redirect('event-list')
+
+    context = {
+        'form':form,
+        'event':event,
+    }
+    return render(request, 'event_booking_test.html', context)
+
+def view_bookings(request):
+    bookings = Booking.objects.all().order_by('-event__datetime')
+    if request.GET.get('past'):
+        # past bookings
+        bookings = Booking.objects.filter(user=request.user, event__datetime__lte=datetime.today()).order_by('-event__datetime')
+    if request.GET.get('all'):
+        # all bookings
+        bookings = Booking.objects.all().order_by('-event__datetime')
+    if request.GET.get('upcoming'):
+        # upcoming bookings
+        bookings = Booking.objects.filter(user=request.user, event__datetime__gt=datetime.today()).order_by('-event__datetime')
+    
+    context = {
+        'bookings':bookings,
+    }
+    return render(request, 'view_bookings_test.html', context)
+
+# ----- Organizer -----
+
+def add_event(request):
+    form = AddUpdateEventForm()
+    if request.method == "POST":
+        form = AddUpdateEventForm(request.POST, request.FILES)
+        if form.is_valid():
+            event_obj = form.save(commit=False)
+            event_obj.owner = request.user
+            event_obj.save()
+            return redirect('event-list')
+
+    context = {
+        'form':form,
+    }
+    return render(request, 'add_event_test.html', context)
+
+def update_event(request, event_slug):
+    event = Event.objects.get(slug=event_slug)
+    form = AddUpdateEventForm()
+    if request.method == "POST":
+        form = AddUpdateEventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event-list')
+    
+    context = {
+        'form':form,
+        'event':event, 
+    }
+    return render(request, 'update_event_test.html', context)
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+# ----- Event owner -----
+
 

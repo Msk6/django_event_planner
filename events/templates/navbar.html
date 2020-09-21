@@ -6,6 +6,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <form action="{% url 'event-list' %}" method="GET">
+            <input type="text" name='search' placeholder="search for events..">
+          </form>
+      </li>
         {% if request.user.is_anonymous %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
@@ -19,6 +24,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">{{ request.user }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Dashboard</a>
         </li>
         {% endif %}
       </ul>

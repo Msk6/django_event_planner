@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<br>
+<br>
+<div class="row">
+    <form action="{% url 'view-bookings' %}" method="GET">
+        <input type="submit" name='all' value="All" class="btn btn-warning">
+    </form>
+    <form action="{% url 'view-bookings' %}" method="GET">
+        <input type="submit" name ='past' value="Past bookings" class="btn btn-warning">
+    </form>
+    <form action="{% url 'view-bookings' %}" method="GET">
+        <input type="submit" name ='upcoming' value="Upcoming bookings" class="btn btn-warning">
+    </form>
+</div>
+<br>
+<br>
+{% for booking in bookings %}
+    <a href="{% url 'event-detail' booking.event.slug %}">
+        <h1>{{booking.event.title}}</h1>
+    </a>
+        <p>{{booking.event.owner.username}}</p>
+        <p>{{booking.event.location}}</p>
+        <p>{{booking.event.datetime}}</p>
+        <p>{{booking.seats}}</p>
+        <hr>
+    {% endfor %}
+    
+{% endblock content %}
