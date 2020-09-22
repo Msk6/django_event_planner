@@ -24,13 +24,15 @@
             update event
         </a>
     </div>
-    <br>
-    <br>
-    <h1>Guests</h1>
-    {% for booking in bookings %}
-        <h3>{{booking.user.username}}</h3>
-        <h3>{{booking.seats}}</h3>
-        <hr>
-    {% endfor %}
+    {% if request.user.is_authenticated and event.owner == request.user %}
+        <br>
+        <br>
+        <h1>Guests</h1>
+        {% for booking in event.bookings.all %}
+            <h3>{{booking.user.username}}</h3>
+            <h3>{{booking.seats}}</h3>
+            <hr>
+        {% endfor %}
+    {% endif %}
     
 {% endblock content %}

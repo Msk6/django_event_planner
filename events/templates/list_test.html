@@ -15,4 +15,23 @@
         <p>{{event.seats}}</p>
         <hr>
     {% endfor %}
+    <br>
+    <hr>
+    <br>
+    <h1>Organizer events</h1>
+
+    {% if request.user.is_authenticated %}
+        {% for event in request.user.event_set.all %}
+            <a href="{% url 'event-detail' event.slug %}">
+                <h1>{{event.title}}</h1>
+            </a>
+            <p>{{event.owner.username}}</p>
+            <p>{{event.description}}</p>
+            <p>{{event.location}}</p>
+            <p>{{event.datetime}}</p>
+            <p>{{event.seats}}</p>
+            <hr>
+        {% endfor %}
+    {% endif %}
+
 {% endblock content %}

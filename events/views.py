@@ -50,7 +50,7 @@ class Login(View):
             if auth_user is not None:
                 login(request, auth_user)
                 messages.success(request, "Welcome Back!")
-                return redirect('dashboard')
+                return redirect('event-list')
             messages.warning(request, "Wrong email/password combination. Please try again.")
             return redirect("login")
         messages.warning(request, form.errors)
@@ -61,13 +61,16 @@ class Logout(View):
     def get(self, request, *args, **kwargs):
         logout(request)
         messages.success(request, "You have successfully logged out.")
-        return redirect("login")
+        return redirect("event-list")
 
 
 # ----- Any user -----
 
 def event_list(request):
     events = Event.objects.filter(datetime__gte=datetime.today()).order_by('datetime')
+
+    # permission organizer
+    # in HTML (only authenticated)
 
     query = request.GET.get('search')
     if query:
@@ -85,16 +88,20 @@ def event_list(request):
 def event_detail(request, event_slug):
     event = Event.objects.get(slug=event_slug)
     # permission (only organizer)
-    bookings = event.bookings.all().distinct()
+    # in HTML 
+
     context = {
         'event': event,
-        'bookings': bookings,
     }
     return render(request, 'detail_test.html', context)
  
-# ----- Registered user (not organizer)-----
+# ----- All Registered user -----
 
 def event_booking(request, event_slug):
+    # permission
+    if not request.user.is_authenticated:
+        return redirect('login')
+
     form = EventBookingForm()
     event = Event.objects.get(slug=event_slug)
     if request.method == "POST":
@@ -118,15 +125,16 @@ def event_booking(request, event_slug):
     return render(request, 'event_booking_test.html', context)
 
 def view_bookings(request):
-    bookings = Booking.objects.all().order_by('-event__datetime')
+    # permission
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    bookings = Booking.objects.filter(user=request.user).order_by('-event__datetime')
     if request.GET.get('past'):
-        # past bookings
         bookings = Booking.objects.filter(user=request.user, event__datetime__lte=datetime.today()).order_by('-event__datetime')
     if request.GET.get('all'):
-        # all bookings
-        bookings = Booking.objects.all().order_by('-event__datetime')
+        bookings = Booking.objects.filter(user=request.user).order_by('-event__datetime')
     if request.GET.get('upcoming'):
-        # upcoming bookings
         bookings = Booking.objects.filter(user=request.user, event__datetime__gt=datetime.today()).order_by('-event__datetime')
     
     context = {
@@ -137,6 +145,10 @@ def view_bookings(request):
 # ----- Organizer -----
 
 def add_event(request):
+    # permission
+    if not request.user.is_authenticated:
+        return redirect('login')
+
     form = AddUpdateEventForm()
     if request.method == "POST":
         form = AddUpdateEventForm(request.POST, request.FILES)
@@ -153,10 +165,22 @@ def add_event(request):
 
 def update_event(request, event_slug):
     event = Event.objects.get(slug=event_slug)
-    form = AddUpdateEventForm()
+    # permission
+    if not (request.user.is_authenticated and event.owner == request.user):
+        return redirect('login')
+
+    data = {
+        'title':event.title,
+        'description':event.description,
+        'location':event.location,
+        'datetime':event.datetime,
+        'seats':event.seats,
+        'reserved_seats':event.reserved_seats,
+        }
+    form = AddUpdateEventForm(initial=data)
     if request.method == "POST":
-        form = AddUpdateEventForm(request.POST, request.FILES, instance=event)
-        if form.is_valid():
+        form = AddUpdateEventForm(request.POST, request.FILES, instance=event, initial=data)
+        if form.is_valid() and form.has_changed():
             form.save()
             return redirect('event-list')
     
@@ -165,20 +189,3 @@ def update_event(request, event_slug):
         'event':event, 
     }
     return render(request, 'update_event_test.html', context)
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-# ----- Event owner -----
-
-

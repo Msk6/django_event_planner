@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'events',
     'crispy_forms',
+    'rest_framework',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -74,6 +75,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'event_planner.wsgi.application'
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases

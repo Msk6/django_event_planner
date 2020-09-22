@@ -7,12 +7,12 @@ urlpatterns = [
     path('login/', views.Login.as_view(), name='login'),
     path('logout/', views.Logout.as_view(), name='logout'),
     
-    path('event/list/', views.event_list, name='event-list'),
-    path('event/<str:event_slug>/detail/', views.event_detail, name='event-detail'),
-    path('event/<str:event_slug>/booking/', views.event_booking, name='event-booking'),
+    path('event/list/', views.event_list, name='event-list'),# any and organizer only #
+    path('event/<str:event_slug>/detail/', views.event_detail, name='event-detail'),# any and organizer only #
+    path('event/<str:event_slug>/booking/', views.event_booking, name='event-booking'),# user #
 
-    path('event/bookings/user/', views.view_bookings, name='view-bookings'),
+    path('event/bookings/list/user/', views.view_bookings, name='bookings-list-user'),# user #
 
-    path('event/add/', views.add_event, name='add-event'),
-    path('event/<str:event_slug>/update/', views.update_event, name='update-event'),
+    path('event/add/', views.add_event, name='add-event'),# user #
+    path('event/<str:event_slug>/update/', views.update_event, name='update-event'),# organizer #
 ]

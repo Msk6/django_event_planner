@@ -5,13 +5,13 @@
 <br>
 <br>
 <div class="row">
-    <form action="{% url 'view-bookings' %}" method="GET">
+    <form action="{% url 'bookings-list-user' %}" method="GET">
         <input type="submit" name='all' value="All" class="btn btn-warning">
     </form>
-    <form action="{% url 'view-bookings' %}" method="GET">
+    <form action="{% url 'bookings-list-user' %}" method="GET">
         <input type="submit" name ='past' value="Past bookings" class="btn btn-warning">
     </form>
-    <form action="{% url 'view-bookings' %}" method="GET">
+    <form action="{% url 'bookings-list-user' %}" method="GET">
         <input type="submit" name ='upcoming' value="Upcoming bookings" class="btn btn-warning">
     </form>
 </div>

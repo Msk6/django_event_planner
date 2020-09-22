@@ -48,6 +48,7 @@ def create_slug(instance, new_slug=None):
         return create_slug(instance, new_slug=new_slug)
     return slug
 
+
 @receiver(pre_save, sender=Event)
 def auto_slug(instance, *args, **kwargs):
     if not instance.slug:
@@ -55,13 +56,13 @@ def auto_slug(instance, *args, **kwargs):
 
 # Update reserved seats when add, update or cancel booking
 @receiver(post_save, sender=Booking)
-def update_reserved_seats(instance, *args, **kwargs):
+def update_reserved_seats_on_update_create(instance, created, *args, **kwargs):
     event = instance.event 
     event.reserved_seats = event.reserved_seats + instance.seats
     event.save()
 
 @receiver(pre_delete, sender=Booking)
-def update_reserved_seats(instance, *args, **kwargs):
+def update_reserved_seats_on_delete(instance, *args, **kwargs):
     event = instance.event
     event.reserved_seats = event.reserved_seats - instance.seats
     event.save()
