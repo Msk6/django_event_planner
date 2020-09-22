@@ -39,6 +39,39 @@ class BookingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = ['event', 'user', 'seats']
+
+
+class EventGuestSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Booking
+        fields = ['user', 'seats']
+
+
+class EventBookingsListSerializer(serializers.ModelSerializer):
+    event_bookings = serializers.SerializerMethodField()
+    event = serializers.SerializerMethodField()
+    class Meta:
+        model = Booking
+        fields = ['event', 'event_bookings',]
+    
+    def get_event_bookings(self, obj):
+        return EventGuestSerializer(obj.bookings.all(), many=True).data
+
+    def get_event(self, obj):
+        return EventListSerializer(obj).data
+
+
+class AddUpdateEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        exclude = ['owner', 'slug','datetime']
+
+
+class BookEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ['seats']
     
 
     

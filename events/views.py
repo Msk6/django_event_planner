@@ -177,7 +177,7 @@ def update_event(request, event_slug):
         'seats':event.seats,
         'reserved_seats':event.reserved_seats,
         }
-    form = AddUpdateEventForm(initial=data)
+    form = AddUpdateEventForm(instance=event)
     if request.method == "POST":
         form = AddUpdateEventForm(request.POST, request.FILES, instance=event, initial=data)
         if form.is_valid() and form.has_changed():
