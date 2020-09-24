@@ -1,38 +1,116 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block content %}
-<br>
-<br>
-<br>
-    <h1>{{event.title}}</h1>
-    <p>{{event.owner.username}}</p>
-    <p>{{event.description}}</p>
-    <p>{{event.location}}</p>
-    <p>{{event.datetime}}</p>
-    <p>{{event.seats}}</p>
-    <div class="row">
-        {% if event.seats > event.reserved_seats %}
-            <a href="{% url 'event-booking' event.slug %}" class="btn btn-warning btn-block">
-                Book event
-            </a>
-        {% else %}
-            <a href="" class="btn btn-warning btn-block deactivate">
-                Full
-            </a>
-        {% endif %}
-        <a href="{% url 'update-event' event.slug %}" class="btn btn-warning btn-block">
-            update event
-        </a>
-    </div>
-    {% if request.user.is_authenticated and event.owner == request.user %}
-        <br>
-        <br>
-        <h1>Guests</h1>
-        {% for booking in event.bookings.all %}
-            <h3>{{booking.user.username}}</h3>
-            <h3>{{booking.seats}}</h3>
+<header class="masthead text-center text-white">
+    <div class="masthead-content">
+      <div class="container">
+          <div class="jumbotron" style="background-color:rgba(0,0,0, 0.5);">
+            <h2 class="masthead-subheading mb-0">{{event.title}}</h2>
             <hr>
-        {% endfor %}
+            <p>Owner: {{event.owner.username}} </p>
+            <p>Description: {{event.description}}</p>
+            <p>Location: {{event.location}}</p>
+            <p>Date and Time: {{event.datetime}}</p>
+            <div class="row">
+                {% if event.seats > event.reserved_seats %}
+                    <a href="{% url 'event-booking' event.slug %}" class="btn btn-primary btn-xl rounded-pill mt-5">
+                        Book event
+                    </a>
+                {% else %}
+                    <a href="" class="btn btn-primary btn-xl rounded-pill mt-5">
+                        Full
+                    </a>
+                {% endif %}
+                {% if request.user.is_authenticated and event.owner == request.user %}
+                <a href="{% url 'update-event' event.slug %}" class="btn btn-primary btn-xl rounded-pill mt-5">
+                    update event
+                </a>
+                {% endif %}
+            </div>
+            <!--end of event detail-->
+        </div>
+        <br> 
+         <!--start of event bookings-->
+         {% if request.user.is_authenticated and event.owner == request.user %}
+         <div class="jumbotron" style="background-color:rgba(0,0,0, 0.5);">
+         <h2 class="masthead-subheading mb-0">Guests</h2>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Seats</th>
+            </tr>
+            </thead>
+            <hr>
+            <tbody>
+                {% for booking in event.bookings.all %}
+                    <tr>
+                        <td>{{booking.user.username}}</td>
+                        <td>{{booking.seats}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        <!---->    
     {% endif %}
+        </table>
+    </div>
+        <!--end of event bookings-->
+
+        <!--satart of comments-->
+        <div class="container jumbotron" style="background-color:rgba(0,0,0, 0.5);">
+            <h2 class="masthead-subheading mb-0">Comments</h2>
+            <hr>
+            {% for comment in comments %}
+            
+                <!--<a href="{% url 'organizer-event-list' comment.user.username %}">
+                    <h3 style="color:white;">{{comment.user.first_name}} {{comment.user.last_name}}</h3>
+                </a>-->
+                <div class="row">
+                    <a href="{% url 'organizer-event-list' comment.user.username %}">
+                        <h3 style="color:white;">@{{comment.user.username}}: </h3>
+                    </a>
+                    <h3>{{comment.comment}}</h3>
+                </div>
+                <hr>
+            {% endfor %}
+
+        </div>
+        <!--end of comments-->
+
+        <!--start of add comments-->
+        {% if request.user.is_authenticated %}
+        <div class="container">
+            <div class="jumbotron" style="background-color:rgba(0,0,0, 0.5);">
+                <h2 class="masthead-subheading mb-0">Your comment</h2>
+                <form action="{% url 'event-detail' event.slug %}" method="POST">
+                {% csrf_token %}
+                {{form|crispy}}
+                <input class = "btn btn-primary btn-xl rounded-pill mt-5" type="submit" value="submit">
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        <!--end of add comments-->
+      </div>  
+    </div>
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+  </header>
+
+
+<!--<h1>Followings</h1>
+    {% for connection in request.user.followings.all %}
+        <h1>{{connection.following.username}}</h1>
+    {% endfor %}
+    <h1>Followers</h1>
+    {% for connection in request.user.followers.all %}
+        <h1>{{connection.follower.username}}</h1>
+    {% endfor %}-->
+    
+    
+
+
     
 {% endblock content %}

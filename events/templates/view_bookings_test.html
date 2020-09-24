@@ -1,31 +1,67 @@
 {% extends "base.html" %}
 
 {% block content %}
-<br>
-<br>
-<br>
-<div class="row">
-    <form action="{% url 'bookings-list-user' %}" method="GET">
-        <input type="submit" name='all' value="All" class="btn btn-warning">
-    </form>
-    <form action="{% url 'bookings-list-user' %}" method="GET">
-        <input type="submit" name ='past' value="Past bookings" class="btn btn-warning">
-    </form>
-    <form action="{% url 'bookings-list-user' %}" method="GET">
-        <input type="submit" name ='upcoming' value="Upcoming bookings" class="btn btn-warning">
-    </form>
-</div>
-<br>
-<br>
-{% for booking in bookings %}
-    <a href="{% url 'event-detail' booking.event.slug %}">
-        <h1>{{booking.event.title}}</h1>
-    </a>
-        <p>{{booking.event.owner.username}}</p>
-        <p>{{booking.event.location}}</p>
-        <p>{{booking.event.datetime}}</p>
-        <p>{{booking.seats}}</p>
-        <hr>
-    {% endfor %}
+
+
+<header class="masthead text-center text-white">
+    <div class="masthead-content">
+      <div class="container">
+        <div class="row">
+            <form action="{% url 'bookings-list-user' %}" method="GET">
+                <input type="submit" name='all' value="All" class="btn btn-primary btn-xl rounded-pill mt-5">
+            </form>
+            <form action="{% url 'bookings-list-user' %}" method="GET">
+                <input type="submit" name ='past' value="Past bookings" class="btn btn-primary btn-xl rounded-pill mt-5">
+            </form>
+            <form action="{% url 'bookings-list-user' %}" method="GET">
+                <input type="submit" name ='upcoming' value="Upcoming bookings" class="btn btn-primary btn-xl rounded-pill mt-5">
+            </form>
+        </div>
+        <br>
+        <br>
+        <br>
+
+          <div class="jumbotron" style="background-color:rgba(0,0,0, 0.5);">
+            <h2 class="masthead-subheading mb-0">My Bookings</h2> 
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Event</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">location</th>
+                    <th scope="col">datetime</th>
+                    <th scope="col">seats</th>
+
+                    
+                </tr>
+                </thead>
+                <hr>
+                <tbody>
+                    {% for booking in bookings %}
+                        <tr>
+                            <a href="{% url 'event-detail' booking.event.slug %}">
+                            <td>
+                                {{booking.event.title}}
+                            </td></a>
+                            <td>{{booking.event.owner.username}}</td>
+                            <td>{{booking.event.location}}</td>
+                            <td>{{booking.event.datetime}}</td>
+                            <td>{{booking.seats}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            <!---->    
+            </table>
+        </div>
+        </div>
+        <br>
+        
+      </div>
+    
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+  </header>
     
 {% endblock content %}

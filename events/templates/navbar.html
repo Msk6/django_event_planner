@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="#">Django Event Planner</a>
+    <a class="navbar-brand" href="{% url 'event-list' %}">Django Event Planner</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -23,11 +23,26 @@
           <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">{{ request.user }}</a>
+          <a class="nav-link" href="{% url 'organizer-event-list' request.user %}">Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Dashboard</a>
-        </li>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ request.user }}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a href="{% url 'update-view-personal-info' request.user %}" style="color: black;">
+                update personal info
+              </a>
+              <a href="{% url 'update-password' request.user %}" style="color: black;">
+                change password
+              </a>
+              <a href="{% url 'bookings-list-user' %}" style="color: black;">
+                view bookings
+              </a>
+            </div>
+            
+          </div>
         {% endif %}
       </ul>
     </div>

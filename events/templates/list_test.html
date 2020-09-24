@@ -1,37 +1,32 @@
 {% extends "base.html" %}
-
 {% block content %}
-<br>
-<br>
-<br>
-    {% for event in events %}
-    <a href="{% url 'event-detail' event.slug %}">
+<header class="masthead text-center text-white">
+    <div class="masthead-content">
+      <div class="container">
+          <div class="jumbotron" style="background-color:rgba(0,0,0, 0.5);">
+            <h2 class="masthead-subheading mb-0">Events</h2>  
+        </div>
+        <br>
+        {% for event in events %}
+    <a href="{% url 'event-detail' event.slug %}" style="color:rgb(73, 72, 72);">
         <h1>{{event.title}}</h1>
     </a>
+    <a href="{% url 'organizer-event-list' event.owner %}" style="color:white;">
         <p>{{event.owner.username}}</p>
-        <p>{{event.description}}</p>
-        <p>{{event.location}}</p>
+    </a>
         <p>{{event.datetime}}</p>
-        <p>{{event.seats}}</p>
+        
+        <br>
         <hr>
     {% endfor %}
-    <br>
-    <hr>
-    <br>
-    <h1>Organizer events</h1>
-
-    {% if request.user.is_authenticated %}
-        {% for event in request.user.event_set.all %}
-            <a href="{% url 'event-detail' event.slug %}">
-                <h1>{{event.title}}</h1>
-            </a>
-            <p>{{event.owner.username}}</p>
-            <p>{{event.description}}</p>
-            <p>{{event.location}}</p>
-            <p>{{event.datetime}}</p>
-            <p>{{event.seats}}</p>
-            <hr>
-        {% endfor %}
-    {% endif %}
+        
+      </div>
+    </div>
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+  </header>
+    
 
 {% endblock content %}

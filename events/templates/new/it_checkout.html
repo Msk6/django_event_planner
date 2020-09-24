@@ -1,0 +1,62 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="section padding_layout_1 checkout_section">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="full">
+          <div class="tab-info login-section">
+            <p>{{event.title}} <a href="#login" class="" data-toggle="collapse">Click here to login</a></p>
+          </div>
+          <div id="login" class="collapse">
+            <div class="login-form-checkout">
+              <p>If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing &amp; Shipping section.</p>
+              <form action="#">
+                <fieldset>
+                <div class="row">
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <label for="username">Username or email <span class="required">*</span></label>
+                    <input class="input-text" name="username" id="username" required="" type="text">
+                  </div>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <input class="input-text" name="password" id="password" required="" type="password">
+                  </div>
+                  <div class="col-md-12 col-sm-12 col-xs-12 btn-login">
+                    <button class="bt_main">Login</button>
+                    <span class="remeber">
+                    <input type="checkbox">
+                    Remember me</span> </div>
+                </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+          <div class="tab-info coupon-section">
+            <p>Have a coupon? <a href="#cupon" class="" data-toggle="collapse">Click here to enter your code</a></p>
+          </div>
+          <div id="cupon" class="collapse">
+            <div class="coupen-form">
+              <form action="#">
+                <fieldset>
+                <div class="row">
+                  <div class="col-md-8 col-sm-8 col-xs-12">
+                    <input class="input-text" name="coupon" placeholder="Coupon code" id="coupon" required="" type="text">
+                  </div>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    <button class="bt_main">Login</button>
+                  </div>
+                </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    {% endblock content %}
